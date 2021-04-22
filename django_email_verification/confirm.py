@@ -2,6 +2,7 @@ from threading import Thread
 from typing import Callable
 
 from django.conf import settings
+from django.utils.module_loading import import_module
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django.urls import get_resolver
@@ -62,7 +63,14 @@ def _get_validated_field(field, default_type=None):
         d = getattr(settings, field)
         if d == "" or d is None or not isinstance(d, default_type):
             raise AttributeError
-        return d
+        path = d.split('.')
+        if len(path) != 3:
+            raise AttributeError
+        else:
+            callback_module = import_module(path[0])
+            callback_file = getattr(callback_module, path[1])
+            callback_method = getattr(callback_file, path[2])
+            return callback_method
     except AttributeError:
         raise NotAllFieldCompiled(f"Field {field} missing or invalid")
 
@@ -70,7 +78,7 @@ def _get_validated_field(field, default_type=None):
 def verify_token(token):
     valid, user = default_token_generator.check_token(token)
     if valid:
-        callback = _get_validated_field('EMAIL_VERIFIED_CALLBACK', default_type=Callable)
+        callback = _get_validated_field('EMAIL_VERIFIED_CALLBACK', default_type=str)
         callback(user)
         user.last_login = timezone.now()
         user.save()
