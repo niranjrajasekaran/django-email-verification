@@ -74,8 +74,8 @@ class EmailVerificationTokenGenerator:
 
         Returns:
             (tuple): tuple containing:
-                valid (bool): True if the token is valid
-                user (Model): the user model if the token is valid
+                valid (bool): True if the token is valid else False
+                user (Model): the user model if the token is valid or invalid
         """
 
         try:
@@ -87,11 +87,11 @@ class EmailVerificationTokenGenerator:
             return False, None
 
         if not constant_time_compare(self._make_token_with_timestamp(user, ts)[0], token):
-            return False, None
+            return False, user
 
         now = self._now()
         if (self._num_seconds(now) - ts) > settings.EMAIL_TOKEN_LIFE:
-            return False, None
+            return False, user
 
         return True, user
 

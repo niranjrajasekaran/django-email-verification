@@ -75,4 +75,4 @@ def verify_token(token):
         user.last_login = timezone.now()
         user.save()
         return valid, user
-    return False, None
+    return False, user

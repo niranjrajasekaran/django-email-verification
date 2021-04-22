@@ -62,6 +62,6 @@ EMAIL_FROM_ADDRESS = 'rousseau.platform@gmail.com'
 EMAIL_MAIL_SUBJECT = 'Conferma la tua mail'
 EMAIL_MAIL_HTML = 'mail.html'
 EMAIL_MAIL_PLAIN = 'plainmail.txt'
-EMAIL_TOKEN_LIFE = 60 * 60
+EMAIL_TOKEN_LIFE = 60
 EMAIL_PAGE_TEMPLATE = 'confirm.html'
 EMAIL_PAGE_DOMAIN = 'https://test.com/'
