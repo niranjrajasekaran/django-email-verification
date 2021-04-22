@@ -84,7 +84,6 @@ def verify_token(token):
     if valid:
         callback = _get_validated_field('EMAIL_VERIFIED_CALLBACK', default_type=str)
         callback(user)
-        user.last_login = timezone.now()
         user.save()
         return valid, user
     return False, user
