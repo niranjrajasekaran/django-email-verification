@@ -63,14 +63,18 @@ def _get_validated_field(field, default_type=None):
         d = getattr(settings, field)
         if d == "" or d is None or not isinstance(d, default_type):
             raise AttributeError
-        path = d.split('.')
-        if len(path) != 3:
-            raise AttributeError
-        else:
-            callback_module = import_module(path[0])
-            callback_file = getattr(callback_module, path[1])
-            callback_method = getattr(callback_file, path[2])
-            return callback_method
+
+        if field == 'EMAIL_VERIFIED_CALLBACK':
+            path = d.split('.')
+            if len(path) != 3:
+                raise AttributeError
+            else:
+                callback_module = import_module(path[0])
+                callback_file = getattr(callback_module, path[1])
+                callback_method = getattr(callback_file, path[2])
+                return callback_method
+
+        return d
     except AttributeError:
         raise NotAllFieldCompiled(f"Field {field} missing or invalid")
 
